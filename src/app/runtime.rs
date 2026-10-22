@@ -1351,7 +1351,7 @@ pub async fn run() -> anyhow::Result<()> {
     let (cli_outcome, source) = parse_startup_args(std::env::args().skip(1));
     match cli_outcome {
         CliOutcome::Help => {
-            println!("Usage: kube [OPTIONS]");
+            println!("Usage: kubrick [OPTIONS]");
             println!();
             println!("OPTIONS:");
             println!("  -n, --namespace <namespace>   Watch a specific namespace");
@@ -1363,10 +1363,15 @@ pub async fn run() -> anyhow::Result<()> {
                 "      --context <name>          Start with this context; switch using the top bar"
             );
             println!("  -h, --help                    Show this help message");
+            println!("  -V, --version                 Show the version");
+            std::process::exit(0);
+        }
+        CliOutcome::Version => {
+            println!("kubrick {}", env!("CARGO_PKG_VERSION"));
             std::process::exit(0);
         }
         CliOutcome::Error(msg) => {
-            eprintln!("kube: {msg}");
+            eprintln!("kubrick: {msg}");
             std::process::exit(2);
         }
         CliOutcome::Run(scope) => {

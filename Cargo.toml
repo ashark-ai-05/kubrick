@@ -1,15 +1,22 @@
 [package]
-name = "kube-tui"
+name = "kubrick"
 version = "0.1.0"
 edition = "2024"
-description = "Fast, discoverable Kubernetes terminal explorer"
+description = "Kubernetes, at terminal speed: a fast, read-only-by-default cluster explorer TUI"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/ashark-ai-05/kube"
+homepage = "https://github.com/ashark-ai-05/kube"
+readme = "README.md"
+keywords = ["kubernetes", "tui", "k8s", "terminal", "kubectl"]
+categories = ["command-line-utilities", "development-tools"]
+exclude = ["/docs/images/demo.gif", "/docs/superpowers", "/.superpowers", "/.remember", "/scripts"]
 
 [lib]
-name = "kube_tui"
+name = "kubrick"
 path = "src/lib.rs"
 
 [[bin]]
-name = "kube"
+name = "kubrick"
 path = "src/main.rs"
 
 [dependencies]

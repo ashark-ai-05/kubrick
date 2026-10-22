@@ -2,7 +2,7 @@ use kube::{
     api::{ApiResource, DynamicObject, GroupVersionKind},
     runtime::watcher,
 };
-use kube_tui::{
+use kubrick::{
     logs::{LogBuffer, LogLine},
     store::watch::ResourceStore,
     ui::{
@@ -43,10 +43,10 @@ fn main() {
             .iter()
             .position(|name| name.eq_ignore_ascii_case(header))
             .unwrap();
-        view.sort = Some(kube_tui::store::table::SortState {
+        view.sort = Some(kubrick::store::table::SortState {
             column,
             descending: true,
-            kind: kube_tui::store::table::SortKind::for_header(header),
+            kind: kubrick::store::table::SortKind::for_header(header),
         });
         let mut samples = vec![];
         for i in 0..100 {
@@ -61,12 +61,12 @@ fn main() {
         report(&format!("10,000-resource {header} sorting"), samples, 16.);
     }
     view.sort = None;
-    let mut workspace = kube_tui::ui::workspace::Workspace::default();
+    let mut workspace = kubrick::ui::workspace::Workspace::default();
     for pod in &objects {
         workspace.dashboard.metrics.latest.insert(
             ("demo".into(), pod.metadata.name.clone().unwrap()),
-            kube_tui::dashboard::metrics::PodUsage {
-                usage: kube_tui::dashboard::metrics::Usage {
+            kubrick::dashboard::metrics::PodUsage {
+                usage: kubrick::dashboard::metrics::Usage {
                     cpu_milli: 5.,
                     memory_bytes: 1048576.,
                 },
@@ -85,7 +85,7 @@ fn main() {
                     f,
                     f.area(),
                     &objects,
-                    kube_tui::app::event::WatchStatus::Synced,
+                    kubrick::app::event::WatchStatus::Synced,
                 )
             })
             .unwrap();
@@ -103,7 +103,7 @@ fn main() {
                     f,
                     f.area(),
                     &objects,
-                    kube_tui::app::event::WatchStatus::Synced,
+                    kubrick::app::event::WatchStatus::Synced,
                 )
             })
             .unwrap();
@@ -124,7 +124,7 @@ fn main() {
                     f,
                     f.area(),
                     &objects,
-                    kube_tui::app::event::WatchStatus::Synced,
+                    kubrick::app::event::WatchStatus::Synced,
                 )
             })
             .unwrap();
@@ -142,7 +142,7 @@ fn main() {
                     f,
                     f.area(),
                     &objects,
-                    kube_tui::app::event::WatchStatus::Synced,
+                    kubrick::app::event::WatchStatus::Synced,
                 )
             })
             .unwrap();

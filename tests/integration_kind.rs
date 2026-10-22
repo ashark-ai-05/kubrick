@@ -4,13 +4,13 @@
 
 use k8s_openapi::api::core::v1::{Pod, Secret};
 use kube::api::{ApiResource, GroupVersionKind};
-use kube_tui::app::event::{AppEvent, WatchStatus};
-use kube_tui::cluster::discovery::discover_kinds;
-use kube_tui::store::events::fetch_events;
-use kube_tui::store::handles::WatchHandles;
-use kube_tui::store::multi::KindAvailability;
-use kube_tui::store::table::fetch_table;
-use kube_tui::store::watch::{ResourceStore, SharedStore, spawn_watch};
+use kubrick::app::event::{AppEvent, WatchStatus};
+use kubrick::cluster::discovery::discover_kinds;
+use kubrick::store::events::fetch_events;
+use kubrick::store::handles::WatchHandles;
+use kubrick::store::multi::KindAvailability;
+use kubrick::store::table::fetch_table;
+use kubrick::store::watch::{ResourceStore, SharedStore, spawn_watch};
 use std::collections::BTreeSet;
 use std::sync::{Arc, OnceLock};
 use std::time::Duration;
@@ -38,7 +38,7 @@ async fn cluster_lock() -> MutexGuard<'static, ()> {
 #[ignore = "requires a cluster; run ./scripts/dev-cluster.sh then cargo test -- --ignored"]
 async fn watch_populates_the_store_from_a_real_cluster() {
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect()
+    let client = kubrick::cluster::connect()
         .await
         .expect("connect to cluster");
     let store: SharedStore = Arc::new(RwLock::new(ResourceStore::new()));
@@ -83,7 +83,7 @@ async fn watch_populates_the_store_from_a_real_cluster() {
 #[ignore = "requires a cluster; run ./scripts/dev-cluster.sh then cargo test -- --ignored"]
 async fn store_reflects_a_deletion_made_during_the_watch() {
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.expect("connect");
+    let client = kubrick::cluster::connect().await.expect("connect");
     let store: SharedStore = Arc::new(RwLock::new(ResourceStore::new()));
     let (tx, mut rx) = mpsc::unbounded_channel::<AppEvent>();
     let gvk = GroupVersionKind::gvk("", "v1", "Pod");
@@ -153,7 +153,7 @@ async fn store_reflects_a_deletion_made_during_the_watch() {
 #[ignore = "requires a cluster; run ./scripts/dev-cluster.sh then cargo test -- --ignored"]
 async fn fetch_table_returns_kubectl_equivalent_columns() {
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect()
+    let client = kubrick::cluster::connect()
         .await
         .expect("connect to cluster");
 
@@ -220,7 +220,7 @@ async fn fetch_table_returns_kubectl_equivalent_columns() {
 #[ignore = "requires a cluster; run ./scripts/dev-cluster.sh then cargo test -- --ignored"]
 async fn switching_clusters_aborts_the_previous_watch() {
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.expect("connect");
+    let client = kubrick::cluster::connect().await.expect("connect");
     let store: SharedStore = Arc::new(RwLock::new(ResourceStore::new()));
     let (tx, mut rx) = mpsc::unbounded_channel::<AppEvent>();
     let gvk = GroupVersionKind::gvk("", "v1", "Pod");
@@ -320,7 +320,7 @@ fn gvk_key(gvk: &GroupVersionKind) -> String {
 #[ignore = "requires a cluster; run ./scripts/dev-cluster.sh then cargo test -- --ignored"]
 async fn discovery_finds_the_core_workload_kinds() {
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect()
+    let client = kubrick::cluster::connect()
         .await
         .expect("connect to cluster");
 
@@ -378,7 +378,7 @@ async fn discovery_returns_every_kind_the_server_says_is_listable_and_watchable(
     // calling `is_browsable`, which would move with the implementation and
     // prove nothing.
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect()
+    let client = kubrick::cluster::connect()
         .await
         .expect("connect to cluster");
 
@@ -473,7 +473,7 @@ async fn events_for_a_real_pod_are_returned() {
     // expires events after an hour by default, so a long-lived kind cluster's
     // original pods reliably have none.
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.expect("connect");
+    let client = kubrick::cluster::connect().await.expect("connect");
     let pods: kube::Api<Pod> = kube::Api::namespaced(client.clone(), "demo");
 
     let name = "events-probe";
@@ -580,7 +580,7 @@ async fn a_forbidden_kind_is_marked_unavailable_not_retried_forever() {
     // retries for ever is a permanent load on the API server and a permanent
     // "reconnecting" in the UI.
     let _serial = cluster_lock().await;
-    let admin = kube_tui::cluster::connect().await.expect("connect");
+    let admin = kubrick::cluster::connect().await.expect("connect");
     let restricted = restricted_client(&admin).await;
 
     let store: SharedStore = Arc::new(RwLock::new(ResourceStore::new()));
@@ -674,11 +674,11 @@ async fn a_forbidden_kind_is_marked_unavailable_not_retried_forever() {
 #[tokio::test]
 #[ignore = "requires isolated kind cluster"]
 async fn on_demand_watches_reach_cluster_resources_in_namespace_mode() {
-    use kube_tui::app::session::Session;
-    use kube_tui::cluster::{ClusterRegistry, discovery::KindInfo};
-    use kube_tui::store::subscriptions;
+    use kubrick::app::session::Session;
+    use kubrick::cluster::{ClusterRegistry, discovery::KindInfo};
+    use kubrick::store::subscriptions;
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.unwrap();
+    let client = kubrick::cluster::connect().await.unwrap();
     let session = Arc::new(Mutex::new(Session::new(
         ClusterRegistry::from_contexts(vec![]),
         client.clone(),
@@ -740,12 +740,12 @@ async fn workload_relationships_and_container_logs_are_live() {
         ResourceExt,
         api::{DeleteParams, DynamicObject, PostParams},
     };
-    use kube_tui::{
+    use kubrick::{
         cluster::related,
         logs::stream::{Message, Options, StreamSession},
     };
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.unwrap();
+    let client = kubrick::cluster::connect().await.unwrap();
     let deployments: kube::Api<k8s_openapi::api::apps::v1::Deployment> =
         kube::Api::namespaced(client.clone(), "demo");
     let deployment = deployments.get("web").await.unwrap();
@@ -793,9 +793,9 @@ async fn mutations_check_identity_and_change_only_the_selected_resource() {
         Api, ResourceExt,
         api::{DeleteParams, DynamicObject, PostParams},
     };
-    use kube_tui::cluster::operations::{Operation, execute};
+    use kubrick::cluster::operations::{Operation, execute};
     let _serial = cluster_lock().await;
-    let client = kube_tui::cluster::connect().await.unwrap();
+    let client = kubrick::cluster::connect().await.unwrap();
     let api: Api<k8s_openapi::api::apps::v1::Deployment> = Api::namespaced(client.clone(), "demo");
     let template=serde_json::from_value(serde_json::json!({"apiVersion":"apps/v1","kind":"Deployment","metadata":{"generateName":"operation-acceptance-"},"spec":{"replicas":0,"selector":{"matchLabels":{"app":"operation-acceptance"}},"template":{"metadata":{"labels":{"app":"operation-acceptance"}},"spec":{"containers":[{"name":"web","image":"nginx:alpine"}]}}}})).unwrap();
     let created = api.create(&PostParams::default(), &template).await.unwrap();

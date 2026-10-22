@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/images/banner.svg" width="900" alt="kube: Kubernetes, at terminal speed">
+  <img src="docs/images/banner.svg" width="900" alt="kubrick: Kubernetes, at terminal speed">
 </p>
 
 <p align="center">
@@ -8,23 +8,26 @@
   <img src="https://img.shields.io/badge/Cluster-kube--rs-8FA0FF?style=for-the-badge&labelColor=0F1117" alt="kube-rs">
   <img src="https://img.shields.io/badge/Default-read--only-3DD68C?style=for-the-badge&labelColor=0F1117" alt="read-only by default">
   <img src="https://img.shields.io/badge/Local%20AI-optional-A78BFA?style=for-the-badge&labelColor=0F1117" alt="local AI, optional">
+  <img src="https://img.shields.io/badge/License-MIT%20%7C%20Apache--2.0-F5A97F?style=for-the-badge&labelColor=0F1117" alt="MIT or Apache-2.0">
 </p>
 
 <p align="center"><b>A fast Kubernetes terminal explorer: live pods, logs and troubleshooting, with keyboard and mouse, in Rust.</b></p>
 
 <p align="center">
-  <img src="docs/images/demo.gif" width="900" alt="kube demo: pod monitor, filters, logs, troubleshooting and Ask Kube">
+  <img src="docs/images/demo.gif" width="900" alt="kubrick demo: pod monitor, filters, logs, troubleshooting and Ask Kube">
 </p>
 
 ## ⚡ Quick start
 
-```sh
-cargo install --path . --locked
+Grab a prebuilt binary for Linux (x86_64, arm64) or macOS (Apple Silicon, Intel) from the [latest release](https://github.com/ashark-ai-05/kube/releases/latest), or build from source:
 
-kube                                 # current kubeconfig context and namespace
-kube -n payments                     # one namespace
-kube -A                              # all namespaces
-kube --kubeconfig ~/clusters.yaml --context production
+```sh
+cargo install --git https://github.com/ashark-ai-05/kube --locked
+
+kubrick                                 # current kubeconfig context and namespace
+kubrick -n payments                     # one namespace
+kubrick -A                              # all namespaces
+kubrick --kubeconfig ~/clusters.yaml --context production
 ```
 
 Uses `KUBECONFIG` or `~/.kube/config` by default. Repeat `--kubeconfig` to merge files. No agent installs in the cluster. Exec and port-forward need `kubectl` on PATH; CPU/memory needs metrics-server.
@@ -139,11 +142,15 @@ Live cluster acceptance uses an isolated kind fixture:
 export KUBECONFIG="$PWD/acceptance-kubeconfig.yaml" CLUSTER=kube-tui-acceptance
 bash scripts/dev-cluster.sh
 cargo test --locked --test integration_kind -- --ignored
-python3 scripts/tui-cluster-smoke.py target/release/kube --stress
+python3 scripts/tui-cluster-smoke.py target/release/kubrick --stress
 ```
 
 More detail, performance notes and measured results: [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md).
 
 </details>
+
+## 📄 License
+
+Dual-licensed under [MIT](LICENSE-MIT) or [Apache-2.0](LICENSE-APACHE), at your option.
 
 <p align="center">Built with Rust, Ratatui and kube-rs · design cues from the <a href="https://ratatui.rs/showcase/apps/">Ratatui showcase</a></p>

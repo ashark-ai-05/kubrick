@@ -23,7 +23,7 @@ import pyte
 config = os.environ.get('KUBECONFIG', '')
 if not config or 'kind-kube-tui-' not in pathlib.Path(config).read_text():
     raise SystemExit('Use the dedicated kind-kube-tui-* kubeconfig for this test.')
-binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kube').resolve())
+binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kubrick').resolve())
 name = 'kube-ui-long-' + uuid.uuid4().hex[:6]
 message = 'BEGIN-LONG ' + 'request_id=abc123 service=payments elapsed=42ms ' * 14 + 'TAIL-VISIBLE'
 fixture = {

@@ -1,5 +1,5 @@
 //! Requires the optional verified AI bundle. No Kubernetes cluster is contacted.
-use kube_tui::{
+use kubrick::{
     assistant::{Intent, local::Bundle},
     ui::inspector::Mode,
 };

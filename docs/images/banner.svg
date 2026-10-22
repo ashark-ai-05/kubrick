@@ -28,7 +28,7 @@
   </circle>
 
   <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
-    <text x="600" y="128" text-anchor="middle" font-size="96" font-weight="700" fill="url(#word)">kube</text>
+    <text x="600" y="128" text-anchor="middle" font-size="96" font-weight="700" fill="url(#word)">kubrick</text>
     <text x="600" y="172" text-anchor="middle" font-size="22" fill="#8A93A6" letter-spacing="1">Kubernetes, at terminal speed.</text>
   </g>
 

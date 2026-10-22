@@ -4,14 +4,14 @@ The optional AI edition bundles **Qwen3.5-2B Q4_K_M**, a pretrained model conver
 
 ## Enable
 
-For a packaged AI release, extract the entire archive and run `./kube` with the adjacent `ai/` directory intact. Press **Ctrl-Space**, click **Ask Kube**, or use **:ask**. The drawer title says **local model available** when discovery succeeds.
+For a packaged AI release, extract the entire archive and run `./kubrick` with the adjacent `ai/` directory intact. Press **Ctrl-Space**, click **Ask Kube**, or use **:ask**. The drawer title says **local model available** when discovery succeeds.
 
 For a source build on Apple Silicon:
 
 ```sh
 cargo build --release --locked
 python3 scripts/package-ai.py target/release --platform macos-arm64
-./target/release/kube --kubeconfig /path/to/clusters.yaml
+./target/release/kubrick --kubeconfig /path/to/clusters.yaml
 ```
 
 Use `--platform ubuntu-x64` on Linux x86-64. Packaging downloads assets once, checks their hashes and creates `target/release/ai`. It refuses to overwrite an existing bundle. Replace an older FunctionGemma bundle with a newly assembled one; do not combine old weights with the new prompt. Alternatively, set `KUBE_AI_DIR=/absolute/path/to/ai` before starting the app. Restart after installing/upgrading. No Python, Ollama, cloud endpoint or separately configured server is required at application runtime.

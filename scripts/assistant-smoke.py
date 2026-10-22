@@ -17,7 +17,7 @@ import pyte
 config = os.environ.get('KUBECONFIG', '')
 if not config or 'kind-kube-tui-' not in pathlib.Path(config).read_text():
     raise SystemExit('Use the dedicated kind-kube-tui-* fixture kubeconfig.')
-binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kube').resolve())
+binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kubrick').resolve())
 master, slave = pty.openpty()
 fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 35, 130, 0, 0))
 before = termios.tcgetattr(slave)
