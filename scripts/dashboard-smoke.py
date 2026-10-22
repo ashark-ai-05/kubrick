@@ -20,7 +20,7 @@ import pyte
 config = os.environ.get('KUBECONFIG', '')
 if not config or 'kind-kube-tui-' not in pathlib.Path(config).read_text():
     raise SystemExit('Use the dedicated kind-kube-tui-* kubeconfig for this test.')
-binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/release/kube').resolve())
+binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/release/kubrick').resolve())
 name = 'kube-dashboard-' + uuid.uuid4().hex[:6]
 incident = 'kube-incident-' + uuid.uuid4().hex[:6]
 fixture = {'apiVersion': 'v1', 'kind': 'Pod', 'metadata': {'name': name, 'namespace': 'demo', 'labels': {'app': name}}, 'spec': {'containers': [{'name': 'worker', 'image': 'nginx:alpine', 'resources': {'requests': {'cpu': '10m', 'memory': '16Mi'}, 'limits': {'cpu': '200m', 'memory': '128Mi'}}, 'readinessProbe': {'httpGet': {'path': '/', 'port': 80}}, 'livenessProbe': {'httpGet': {'path': '/', 'port': 80}}}]}}

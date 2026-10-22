@@ -27,6 +27,8 @@ pub enum CliOutcome {
     Run(NamespaceScope),
     /// User requested help (--help or -h).
     Help,
+    /// User requested the version (--version or -V).
+    Version,
     /// An error occurred; print this message to stderr and exit 2.
     Error(String),
 }
@@ -49,6 +51,7 @@ pub fn should_hint_all_namespaces(was_fallback: bool, item_count: usize) -> bool
 /// # Behavior
 /// - No arguments: `Run(FromContext)`
 /// - `-h` or `--help`: `Help`
+/// - `-V` or `--version`: `Version`
 /// - `-n <value>` or `--namespace <value>`: `Run(One(value))`
 /// - `-A` or `--all-namespaces`: `Run(All)`
 /// - `-n` or `--namespace` without a value: `Error(...)`
@@ -68,6 +71,7 @@ where
 
         match arg_str {
             "-h" | "--help" => return CliOutcome::Help,
+            "-V" | "--version" => return CliOutcome::Version,
             "-A" | "--all-namespaces" => {
                 all_namespaces = true;
             }
@@ -217,6 +221,12 @@ mod tests {
     fn help_short_flag_gives_help() {
         let args = vec!["-h"];
         assert_eq!(parse_args(args), CliOutcome::Help);
+    }
+
+    #[test]
+    fn version_flags_give_version() {
+        assert_eq!(parse_args(vec!["-V"]), CliOutcome::Version);
+        assert_eq!(parse_args(vec!["--version"]), CliOutcome::Version);
     }
 
     #[test]

@@ -13,7 +13,7 @@ import tempfile
 import termios
 import time
 
-binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kube').resolve())
+binary = str(pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else 'target/debug/kubrick').resolve())
 for shutdown in ('q', 'SIGTERM'):
     with tempfile.TemporaryDirectory(prefix='kube-terminal-') as temp:
         config = pathlib.Path(temp) / 'config'

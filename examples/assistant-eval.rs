@@ -1,5 +1,5 @@
 //! Evaluate the shipped action vocabulary; --model-only also measures raw model limitations.
-use kube_tui::assistant::{self, local::Bundle};
+use kubrick::assistant::{self, local::Bundle};
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let args: Vec<_> = std::env::args().collect();

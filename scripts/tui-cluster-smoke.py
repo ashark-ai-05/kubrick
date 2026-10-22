@@ -23,7 +23,7 @@ config = os.environ.get('KUBECONFIG', '')
 if not config or 'kind-kube-tui-' not in pathlib.Path(config).read_text():
     raise SystemExit('Use the dedicated kind-kube-tui-* kubeconfig for this test.')
 binary_args = [arg for arg in sys.argv[1:] if not arg.startswith('--')]
-binary = str(pathlib.Path(binary_args[0] if binary_args else 'target/debug/kube').resolve())
+binary = str(pathlib.Path(binary_args[0] if binary_args else 'target/debug/kubrick').resolve())
 master, slave = pty.openpty()
 fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 45, 180, 0, 0))
 before = termios.tcgetattr(slave)

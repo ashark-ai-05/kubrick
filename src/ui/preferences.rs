@@ -18,8 +18,11 @@ impl Preferences {
             .unwrap_or_else(|| {
                 PathBuf::from(std::env::var_os("HOME").unwrap_or_default()).join(".config")
             });
-        let path = root.join("kube/preferences.json");
+        let path = root.join("kubrick/preferences.json");
+        // Settings saved before the rename live under `kube/`; read them once
+        // and save to the new location on the next change.
         let value = std::fs::read(&path)
+            .or_else(|_| std::fs::read(root.join("kube/preferences.json")))
             .ok()
             .and_then(|b| serde_json::from_slice::<serde_json::Value>(&b).ok())
             .unwrap_or_default();
