@@ -83,3 +83,40 @@ jobs:
           cat dist/*.sha256 > dist/SHA256SUMS
           gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS \
             --repo "$GITHUB_REPOSITORY" --title "kubrick $TAG" --generate-notes --verify-tag
+  homebrew:
+    needs: release
+    runs-on: ubuntu-latest
+    env:
+      TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - name: Check for tap token
+        id: tap
+        run: |
+          if [ -n "$TAP_TOKEN" ]; then
+            echo enabled=true >> "$GITHUB_OUTPUT"
+          else
+            echo '::notice::HOMEBREW_TAP_TOKEN is not set; skipping the Homebrew tap update'
+          fi
+      - if: steps.tap.outputs.enabled
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - if: steps.tap.outputs.enabled
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+      - name: Update ashark-ai-05/homebrew-tap
+        if: steps.tap.outputs.enabled
+        run: |
+          cat dist/*.sha256 > SHA256SUMS
+          git clone --depth 1 "https://x-access-token:${TAP_TOKEN}@github.com/ashark-ai-05/homebrew-tap.git" tap
+          mkdir -p tap/Formula
+          python3 scripts/homebrew-formula.py "$TAG" SHA256SUMS > tap/Formula/kubrick.rb
+          cd tap
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Formula/kubrick.rb
+          git commit -m "kubrick $TAG"
+          git push
