@@ -46,7 +46,7 @@ Rendered-screen review also keeps the context/namespace footer visible with the 
 
 Passed 530 unit/render/input tests and Clippy after rejecting late Table responses for evicted kinds or superseded requests. This prevents slow API replies from repopulating caches outside the eight-kind retention policy. Table notifications also use the existing coalescing gate.
 
-The release smoke/load check after this fix passed: first populated view **504 ms**, key-to-render **10.1 ms p95**. The preceding delivery commit (`ceae1a5`) also passed all three [remote Acceptance jobs](https://github.com/ashark-ai-05/kube/actions/runs/36365155447): Linux, macOS and the isolated Kubernetes workflow.
+The release smoke/load check after this fix passed: first populated view **504 ms**, key-to-render **10.1 ms p95**. The preceding delivery commit (`ceae1a5`) also passed all three [remote Acceptance jobs](https://github.com/ashark-ai-05/kubrick/actions/runs/36365155447): Linux, macOS and the isolated Kubernetes workflow.
 
 ## UI revision — selectors, navigation and readable logs
 
@@ -98,7 +98,7 @@ Replaced the experimental FunctionGemma bundle with pretrained Qwen3.5-2B Q4_K_M
 
 Acceptance: 568 unit/render/input tests, 11 live kind API tests, warning-free Clippy, formatting, workflow lint, actual offline native-model integration and real-terminal NLP preview/cancellation passed. The standard vocabulary passed 14/14; the final built-in + native + validation path passed 45/45 development regression cases, including 20 unsupported requests. Raw model scores and failures remain explicit in ai/evaluations/qwen-2026-09-28; these limited tests do not establish general model accuracy.
 
-The final live log stress check passed at approximately 10,000 lines/second with 4.3 ms p95 key-to-render latency and 263 ms to the first populated view. The cache fix also passed all remote Linux, macOS and Kubernetes Acceptance jobs: https://github.com/ashark-ai-05/kube/actions/runs/36397707603 .
+The final live log stress check passed at approximately 10,000 lines/second with 4.3 ms p95 key-to-render latency and 263 ms to the first populated view. The cache fix also passed all remote Linux, macOS and Kubernetes Acceptance jobs: https://github.com/ashark-ai-05/kubrick/actions/runs/36397707603 .
 
 Final app Acceptance passed on Linux, macOS and Kubernetes at a579b55 (run 36399164207). AI packaging passed Linux but the hosted Mac exceeded the original 30-second cold-request deadline. The native worker now has a 60-second overall bound, two-second health requests and a 45-second completion-request bound inside that overall deadline. It remains a cancellable background task using two CPU threads; UI frame budgets and the prompt/model are unchanged. This permits slower cold loading instead of rejecting an otherwise healthy native worker.
 
