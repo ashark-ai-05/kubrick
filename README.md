@@ -22,7 +22,8 @@
 Grab a prebuilt binary for Linux (x86_64, arm64) or macOS (Apple Silicon, Intel) from the [latest release](https://github.com/ashark-ai-05/kubrick/releases/latest), or build from source:
 
 ```sh
-cargo install --git https://github.com/ashark-ai-05/kubrick --locked
+brew install ashark-ai-05/tap/kubrick                               # macOS or Linux
+cargo install --git https://github.com/ashark-ai-05/kubrick --locked  # from source
 
 kubrick                                 # current kubeconfig context and namespace
 kubrick -n payments                     # one namespace
