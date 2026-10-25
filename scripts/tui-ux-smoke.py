@@ -131,7 +131,7 @@ try:
         expect('Namespaces')
         send('demo\r')
         expect('web-')
-        click(12, 0)
+        click(screen.display[0].index('kind-kube-tui-acceptance') + 2, 0)
         expect('Clusters')
         expect('kind-kube-tui-alternate')
         capture('clusters')
