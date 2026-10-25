@@ -30,7 +30,6 @@ def main():
     print(f'''class Kubrick < Formula
   desc "Fast, read-only-by-default Kubernetes cluster explorer for the terminal"
   homepage "{REPO}"
-  version "{tag.removeprefix('v')}"
   license any_of: ["MIT", "Apache-2.0"]
 
   on_macos do
