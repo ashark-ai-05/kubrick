@@ -40,7 +40,7 @@ impl Header {
         // (right side) the read/write mode chip and the command-palette hint.
         let top = Rect::new(area.x, area.y, area.width, area.height.min(1));
         let cells = Layout::horizontal([
-            Constraint::Length(9),      // brand chip " ◆ KUBE "
+            Constraint::Length(12),     // brand chip " ◆ KUBRICK "
             Constraint::Length(1),      // gap
             Constraint::Fill(1),        // cluster name
             Constraint::Percentage(24), // namespace chip
@@ -51,7 +51,7 @@ impl Header {
         ])
         .split(top);
         f.render_widget(
-            Paragraph::new(" ◆ KUBE ").style(
+            Paragraph::new(" ◆ KUBRICK ").style(
                 Style::default()
                     .bg(theme::INDIGO)
                     .fg(theme::PAPER)
