@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Namespace
+metadata: {name: payments}
+---
+apiVersion: v1
+kind: Namespace
+metadata: {name: checkout}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: payments-api, namespace: payments, labels: {app: payments, tier: api}}
+spec:
+  replicas: 3
+  selector: {matchLabels: {app: payments, tier: api}}
+  template:
+    metadata: {labels: {app: payments, tier: api}}
+    spec:
+      containers:
+      - name: api
+        image: busybox:1.36
+        command: [sh, -c]
+        args:
+        - |
+          i=0; while true; do i=$((i+1));
+          echo "{\"level\":\"info\",\"msg\":\"charge authorised\",\"order\":\"ord-$i\",\"amount_cents\":$((i*137%9000)),\"latency_ms\":$((i*7%180))}";
+          [ $((i%9)) -eq 0 ] && echo "{\"level\":\"warn\",\"msg\":\"card network slow\",\"provider\":\"visa\",\"latency_ms\":$((900+i%300))}";
+          sleep 1; done
+        resources: {requests: {cpu: 20m, memory: 16Mi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: settlement-worker, namespace: payments, labels: {app: payments, tier: batch}}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: payments, tier: batch}}
+  template:
+    metadata: {labels: {app: payments, tier: batch}}
+    spec:
+      containers:
+      - name: worker
+        image: busybox:1.36
+        command: [sh, -c]
+        args:
+        - |
+          echo '{"level":"info","msg":"connecting to ledger","host":"ledger.payments.svc:5432"}'; sleep 3;
+          echo '{"level":"error","msg":"ledger connection refused","attempt":1,"error":"dial tcp 10.96.14.2:5432: connect: connection refused"}'; exit 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: ledger, namespace: payments, labels: {app: ledger}}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: ledger}}
+  template:
+    metadata: {labels: {app: ledger}}
+    spec:
+      containers:
+      - name: postgres
+        image: registry.example.internal/ledger-postgres:16.4
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: storefront, namespace: checkout, labels: {app: storefront}}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: storefront}}
+  template:
+    metadata: {labels: {app: storefront}}
+    spec:
+      containers:
+      - name: web
+        image: nginx:alpine
+        resources: {requests: {cpu: 10m, memory: 16Mi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: cart, namespace: checkout, labels: {app: cart}}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: cart}}
+  template:
+    metadata: {labels: {app: cart}}
+    spec:
+      containers:
+      - name: cart
+        image: busybox:1.36
+        command: [sh, -c, 'while true; do echo "{\"level\":\"info\",\"msg\":\"cart updated\",\"items\":$(( $(date +%s) % 7 ))}"; sleep 2; done']
+        readinessProbe:
+          exec: {command: [sh, -c, 'test $(( $(date +%s) % 40 )) -lt 30']}
+          periodSeconds: 5
